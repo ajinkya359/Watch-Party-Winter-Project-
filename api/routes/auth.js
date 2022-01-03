@@ -53,7 +53,7 @@ router.post('/register', [
       }
  })
 
-//LOGIN: 
+
 
 router.post('/login', [
     body('email', 'Enter a valid email').isEmail(),

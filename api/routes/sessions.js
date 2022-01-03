@@ -1,0 +1,109 @@
+const express = require("express");
+const router = express.Router();
+const User = require("../models/User");
+const Sessions = require("../models/Sessions");
+const bcrypt = require("bcryptjs");
+
+router.post("/login", async (req, res) => {
+  if (await is_logged_in(req)) {
+    res.status(300).send("Already logged in");
+    return;
+  }
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email: email });
+    if (!user) {
+      return res.json({ error: "User does not exists" });
+    }
+
+    const passwordCompare = await bcrypt.compare(password, user.password);
+    if (!passwordCompare) {
+      return res.status(400).json({ error: "Wrong Credentials" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const secPass = await bcrypt.hash(password, salt);
+    const session = await Sessions.create({
+      user_session_id: secPass,
+      user_id: user._id,
+    });
+
+    const cookie_data = { session_id: secPass, user_id: user._id };
+    res.cookie("watchParty", cookie_data, {
+      maxAge: 900000,
+      httpOnly: true,
+    });
+
+    res.status(200).json("Logged in");
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ err });
+  }
+});
+
+router.post("/register", async (req, res) => {
+  if (await is_logged_in(req)) {
+    res.status(300).send("Already logged in");
+    return;
+  }
+  const { email, username, password } = req.body;
+  try {
+    let user_byemail = await User.findOne({ email: email });
+    let user_byusername = await User.findOne({ username: username });
+    if (user_byemail || user_byusername) {
+      return res.status(400).json({ error: "Sorry, user already exists!" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const secPass = await bcrypt.hash(password, salt);
+    const user = await User.create({
+      username: username,
+      email: email,
+      password: secPass,
+    });
+    const session = await Sessions.create({
+      user_session_id: secPass,
+      user_id: user._id,
+    });
+    const cookie_data = { session_id: secPass, user_id: user._id };
+    res.cookie("watchParty", cookie_data, {
+      maxAge: 900000,
+      httpOnly: true,
+    });
+    res.status(200).send("User registered");
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ err });
+  }
+});
+router.get("/logout", async (req, res) => {
+  if (await is_logged_in(req)) {
+    const cookie = req.cookies.watchParty;
+    const { session_id, user_id } = cookie;
+
+    res.clearCookie("watchParty");
+    res.status(200).send("Logged out successfully");
+    await Sessions.deleteMany({
+      user_id: user_id,
+    });
+  } else res.status(300).send("Not Logged In");
+});
+
+const is_logged_in = async (req) => {
+  const cookie = req.cookies.watchParty;
+  if (cookie === null || cookie === undefined) return false;
+  const { session_id, user_id } = cookie;
+  const status = await verify(session_id, user_id);
+  if (status) return true;
+  else return false;
+};
+
+const verify = async (session_id, user_id) => {
+  const session = await Sessions.findOne({
+    user_id: user_id,
+    user_session_id: session_id,
+  });
+  if (session === null) return false;
+  return true;
+};
+
+module.exports = router;

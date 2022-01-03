@@ -3,6 +3,10 @@ const app = express();
 const mongoose = require("mongoose")
 const dotenv = require("dotenv");
 const authRoute = require("./routes/auth")
+const sessions=require("./routes/sessions")
+var cookieParser = require("cookie-parser");
+
+
 
 dotenv.config();
 
@@ -13,6 +17,8 @@ mongoose.connect(process.env.MONGO_URL)
 });
 
 app.use(express.json())
+app.use(cookieParser());
+
 
 app.listen(5000, ()=>{
     console.log("App listening on port 5000");
@@ -20,3 +26,4 @@ app.listen(5000, ()=>{
 
 
 app.use("/api/auth", authRoute);
+app.use("/api/sessions",sessions)
