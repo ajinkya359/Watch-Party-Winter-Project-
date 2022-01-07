@@ -1,6 +1,10 @@
-import React from 'react'
+import React,{useState} from 'react'
 import styled from 'styled-components'
 import { mobile } from '../responsive'
+import axios from 'axios' 
+import { backend } from '../backend'
+
+
 
 const Container = styled.div`
 width: 100vw;
@@ -57,18 +61,50 @@ margin-left: 29%;
 `
 
 const Register = () => {
+    const [username, setusername] = useState("")
+    const [email, setemail] = useState("")
+    const [password, setpassword] = useState("")
+    const [passwordagain, setpasswordagain] = useState("")
+    const [error,seterror]=useState("")
+
+    const handleClick=async(e)=>{
+        e.preventDefault();
+        const data={
+            email:email,
+            password:password,
+            username:username
+        }
+        await axios.post(backend+"/register",data,{withCredentials:true})
+        .then(res=>{
+            const data=res.data;
+            if(data.status) {
+                seterror("Registered")
+                console.log("Login","Logged in");}
+            else{
+                seterror(data.error)
+                console.log("Login",data.error);
+            }
+            
+        }).catch(err=>{
+            console.log("Login",err);
+        }
+        )
+        
+    }
+
+
     return (
         <Container>
             <Wrapper>
                 <Title>CREATE AN ACCOUNT</Title>
-                <Form>
-                    <Input placeholder="username"/>
-                    <Input placeholder="email"/>
-                    <Input placeholder="password"/>
-                    <Input placeholder="Confirm password"/>
-                    
+                <Form className='form'>
+                    <Input placeholder="username"onChange={(e)=> setusername(e.target.value)}/>
+                    <Input placeholder="email" onChange={(e)=> setemail(e.target.value)}/>
+                    <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)}/>
+                    <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)}/>
+                    <div style={{"color":"red"}}>{error}</div>
                     <Agreement>By creating an account, I consert to the processing of my personal data in accordance with the <b>PRIVACY POLICY</b></Agreement>
-                    <Button>CREATE</Button>
+                    <Button onClick={handleClick}>CREATE</Button>
                 </Form>
             </Wrapper>
         </Container>

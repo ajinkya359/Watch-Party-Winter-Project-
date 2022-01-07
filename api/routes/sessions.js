@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 
 router.post("/login", async (req, res) => {
   if (await is_logged_in(req)) {
-    res.status(300).send("Already logged in");
+    res.json({error:"Already logged in",status:false});
     return;
   }
   const { email, password } = req.body;
@@ -14,12 +14,12 @@ router.post("/login", async (req, res) => {
   try {
     let user = await User.findOne({ email: email });
     if (!user) {
-      return res.json({ error: "User does not exists" });
+      return res.json({ error: "User does not exists",status:false });
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-      return res.status(400).json({ error: "Wrong Credentials" });
+      return res.json({ error: "Wrong Credentials",status:false });
     }
     const salt = await bcrypt.genSalt(10);
     const secPass = await bcrypt.hash(password, salt);
@@ -34,7 +34,7 @@ router.post("/login", async (req, res) => {
       httpOnly: true,
     });
 
-    res.status(200).json("Logged in");
+    res.status(200).json({status:true});
   } catch (err) {
     console.log(err);
     res.status(400).json({ err });
@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   if (await is_logged_in(req)) {
-    res.status(300).send("Already logged in");
+    res.json({error:"Already logged in",status:false});
     return;
   }
   const { email, username, password } = req.body;
@@ -51,7 +51,7 @@ router.post("/register", async (req, res) => {
     let user_byemail = await User.findOne({ email: email });
     let user_byusername = await User.findOne({ username: username });
     if (user_byemail || user_byusername) {
-      return res.status(400).json({ error: "Sorry, user already exists!" });
+      return res.json({ error: "Sorry, user already exists!" ,status:false});
     }
     const salt = await bcrypt.genSalt(10);
     const secPass = await bcrypt.hash(password, salt);
@@ -69,10 +69,10 @@ router.post("/register", async (req, res) => {
       maxAge: 900000,
       httpOnly: true,
     });
-    res.status(200).send("User registered");
+    res.status(200).json({status:true});
   } catch (err) {
     console.log(err);
-    res.status(400).json({ err });
+    res.json({ error:err,status:false });
   }
 });
 router.get("/logout", async (req, res) => {

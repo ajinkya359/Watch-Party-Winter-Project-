@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { mobile } from '../responsive'
 import img from '../images/login.png'
 import {Link} from "react-router-dom"
+import axios from 'axios' 
+import { backend } from '../backend'
 
 const Container = styled.div`
 width: 100vw;
@@ -79,9 +81,29 @@ const Error = styled.span`
 const Login = () => {
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
-
-    const handleClick = (e)=>{
+    const [error,seterror]=useState("")
+    const handleClick = async (e)=>{
         e.preventDefault();
+        const data={
+            email:email,
+            password:password
+        }
+        await axios.post(backend+"/login",data,{withCredentials:true})
+        .then(res=>{
+            const data=res.data;
+            if(data.status) {
+                seterror("Logged In")
+                console.log("Login","Logged in");}
+            else{
+                seterror(data.error)
+                console.log("Login",data.error);
+            }
+            
+        }).catch(err=>{
+            console.log("Login",err);
+        }
+        )
+        console.log(email,password);
     }
     return (
         <Container>
@@ -91,7 +113,7 @@ const Login = () => {
                 <Input type="email" placeholder="email" onChange={(e)=> setemail(e.target.value)}/>
                 <Input type="password" placeholder="password" onChange={(e)=> setpassword(e.target.value)}/>
                 <Button onClick={handleClick} >LOGIN</Button>  
-                {/* {error && <Error>Something went wrong...</Error>}  */}
+                {error.length!==0 && <Error>{error}</Error>} 
                 <LINK>Forgot password ?</LINK>
                 <LINK style={{"width": "45px"}}> Register </LINK>
 
