@@ -28,7 +28,7 @@ router.post("/login", async (req, res) => {
       user_id: user._id,
     });
 
-    const cookie_data = { session_id: secPass, user_id: user._id };
+    const cookie_data = { session_id: secPass, user_id: user._id, username: user.username };
     res.cookie("watchParty", cookie_data, {
       maxAge: 900000,
       httpOnly: true,
@@ -64,7 +64,7 @@ router.post("/register", async (req, res) => {
       user_session_id: secPass,
       user_id: user._id,
     });
-    const cookie_data = { session_id: secPass, user_id: user._id };
+    const cookie_data = { session_id: secPass, user_id: user._id, username: user.username };
     res.cookie("watchParty", cookie_data, {
       maxAge: 900000,
       httpOnly: true,

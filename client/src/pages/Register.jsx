@@ -77,6 +77,7 @@ const Register = () => {
         await axios.post(backend+"/register",data,{withCredentials:true})
         .then(res=>{
             const data=res.data;
+            console.log(data.status)
             if(data.status) {
                 seterror("Registered")
                 console.log("Login","Logged in");}
