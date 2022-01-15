@@ -79,15 +79,39 @@ router.get("/logout", async (req, res) => {
   if (await is_logged_in(req)) {
     const cookie = req.cookies.watchParty;
     const { session_id, user_id } = cookie;
-
+    console.log("Logging out");
     res.clearCookie("watchParty");
-    res.status(200).send("Logged out successfully");
+    res.status(200).send({status:true,data:"Logged out successfully"});
     await Sessions.deleteMany({
       user_id: user_id,
     });
-  } else res.status(300).send("Not Logged In");
+  } else res.send({status:false,data:"Not Logged In"});
 });
+router.get('/check_login_status',async (req,res)=>{
+  const status=await is_logged_in(req)
+  console.log(status);
+  if(status)
+ {
+  const cookie = req.cookies.watchParty;
+  const { session_id, user_id } = cookie;
+  console.log(user_id);
 
+   const user=await User.findOne({
+     _id:user_id
+   })
+   console.log(user);
+   res.send({
+     status:true,
+     username:user.username
+   })
+  }
+  else{
+    res.send({
+      status:false
+    })
+  }
+  
+})
 const is_logged_in = async (req) => {
   const cookie = req.cookies.watchParty;
   if (cookie === null || cookie === undefined) return false;
