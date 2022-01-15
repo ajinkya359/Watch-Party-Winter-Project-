@@ -5,6 +5,8 @@ import img from '../images/login.png'
 import {Link} from "react-router-dom"
 import axios from 'axios' 
 import { backend } from '../backend'
+import { useNavigate } from 'react-router-dom';
+
 
 const Container = styled.div`
 width: 100vw;
@@ -79,6 +81,7 @@ const Error = styled.span`
 `
 
 const Login = () => {
+    const navigate=useNavigate();
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
     const [error,seterror]=useState("")
@@ -92,11 +95,14 @@ const Login = () => {
         .then(res=>{
             const data=res.data;
             if(data.status) {
+                navigate('/home')
                 seterror("Logged In")
                 console.log("Login","Logged in");}
             else{
                 seterror(data.error)
-                console.log("Login",data.error);
+                if(data.error==="Already logged in")
+                navigate('/home')
+                else console.log("Login",data.error);
             }
             
         }).catch(err=>{

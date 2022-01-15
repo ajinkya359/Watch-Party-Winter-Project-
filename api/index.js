@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 
 app.use(express.json())
 app.use(cookieParser());
-app.use(cors())
+// app.use(cors())
 const server = app.listen(5000, ()=>{
     console.log("App listening on port 5000");
 })

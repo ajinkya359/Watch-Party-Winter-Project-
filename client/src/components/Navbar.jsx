@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import {Person} from '@material-ui/icons'
+import {AddBoxOutlined, Person} from '@material-ui/icons'
+import axios from 'axios';
+import { backend } from '../backend';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
 height: 50px;
@@ -48,7 +51,27 @@ display: flex;
 `;
 
 
-const Navbar = () => {
+const Navbar = (props) => {
+  const navigate=useNavigate();
+  const handleLogout=async ()=>{
+    // console.log("Logging out");
+    await axios.get(backend+"/logout",{withCredentials:true})
+    .then(res=>{
+      console.log(res.data)
+      const data=res.data
+      if(data.status)
+      {
+        navigate('/login')
+      }
+      else{
+        alert("Not logged in")
+        navigate('/login')
+
+      }
+    })
+    .catch(err=>console.log(err))
+  }
+  console.log("navbar",props);
     return (
         <div>
             <Container>
@@ -61,14 +84,14 @@ const Navbar = () => {
                   <Right>
                       <MenuItems>
                       <Username>
-                        Sarthak Jain
+                        {props.username}
                         <Person style={{"marginLeft":"5px"}}/>
                       </Username>
                       </MenuItems>
                       <MenuItems>
                          About Us
                       </MenuItems>
-                      <MenuItems>
+                      <MenuItems onClick={handleLogout}>
                         LogOut
                       </MenuItems>
                       
