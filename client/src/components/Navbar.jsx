@@ -1,105 +1,96 @@
-import React from 'react'
-import styled from 'styled-components'
-import {AddBoxOutlined, Person} from '@material-ui/icons'
-import axios from 'axios';
-import { backend } from '../backend';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import axios from "axios";
+import { backend } from "../backend";
+import { useNavigate } from "react-router-dom";
+import "./Navbar.css";
+import Button from "@mui/material/Button";
+import { Avatar } from "@material-ui/core";
+import Tooltip from "@material-ui/core/Tooltip";
 
-const Container = styled.div`
-height: 50px;
-width: 100vw;
-background-color: #feffc2;
-`;
-const Wrapper = styled.div`
- display: flex;
- padding: 10px;
- 
-`;
 
-const Left = styled.div`
- flex: 25%;
- font-size: 18px;
- margin-top: 2px;
-`;
-const Title = styled.div`
-cursor: pointer;
-/* border: 1px solid black; */
-width: 105px;
-`;
+function stringToColor(string) {
+  let hash = 0;
+  let i;
 
-const Right = styled.div`
-flex: 75%;
-display: flex;
-justify-content: flex-end;
-align-items: center;
-font-size: 15px;
-`;
-const MenuItems = styled.div`
- margin-left: 20px;
- cursor: pointer;
-`; 
-const Username = styled.div`
-border: 1px solid gray;
-border-top-right-radius: 20px;
-border-bottom-right-radius: 20px;
-border-top-left-radius: 20px;
-border-bottom-left-radius: 20px;
-padding-left: 5px;
-padding-right: 5px;
-align-items: center;
-display: flex;
-`;
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.substr(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+function stringAvatar(name) {
+  if(name===undefined)
+  {name="None"
+  }
+  name=`${name}  `
+  const first=name.split(' ')[0][0]
+  const last=name.split(' ')[1][0]
+  var short=""
+  if(last===undefined)
+  short=first
+  else short=first+last
+  return {
+
+    sx: {
+      bgcolor: stringToColor(name),
+    },
+    children: short,
+  };
+}
 
 
 const Navbar = (props) => {
-  const navigate=useNavigate();
-  const handleLogout=async ()=>{
+  
+  const navigate = useNavigate();
+  const handleLogout = async () => {
     // console.log("Logging out");
-    await axios.get(backend+"/logout",{withCredentials:true})
-    .then(res=>{
-      console.log(res.data)
-      const data=res.data
-      if(data.status)
-      {
-        navigate('/login')
-      }
-      else{
-        alert("Not logged in")
-        navigate('/login')
-
-      }
-    })
-    .catch(err=>console.log(err))
-  }
-  console.log("navbar",props);
-    return (
-        <div>
-            <Container>
-                <Wrapper>
-                  <Left>
-                      <Title>
-                    <b>Watch-Party</b>
-                    </Title>
-                  </Left>
-                  <Right>
-                      <MenuItems>
-                      <Username>
-                        {props.username}
-                        <Person style={{"marginLeft":"5px"}}/>
-                      </Username>
-                      </MenuItems>
-                      <MenuItems>
-                         About Us
-                      </MenuItems>
-                      <MenuItems onClick={handleLogout}>
-                        LogOut
-                      </MenuItems>
-                      
-                  </Right>
-                </Wrapper>
-            </Container>
+    await axios
+      .get(backend + "/logout", { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        const data = res.data;
+        if (data.status) {
+          navigate("/login");
+        } else {
+          alert("Not logged in");
+          navigate("/login");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+  console.log("navbar", props);
+  return (
+    <div className="navbar_body">
+      <div className="website_name">
+        <b>Watch-Party</b>
+      </div>
+      <div className="nav_bar_details">
+        <div className="user_details">
+          <Tooltip title={props.username||"Hello"}>
+          <Avatar {...stringAvatar(props.username)} />
+          </Tooltip>
         </div>
-    )
-}
+        <div className="about_us">About Us</div>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={handleLogout}
+          className="logout"
+        >
+          LogOut
+        </Button>
+      </div>
+    </div>
+  );
+};
 
-export default Navbar
+export default Navbar;
