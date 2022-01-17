@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import axios from 'axios'
 import { backend } from '../backend'
 import { Navigate, useNavigate } from 'react-router-dom'
+import RoomSelection from '../components/RoomSelection/RoomSelection'
 
 const Main = styled.div`
 display: flex;
@@ -35,6 +36,7 @@ const Home = () => {
         <div>
             <Navbar username={username}/>
             <Chat/>
+            {/* <RoomSelection/> */}
         </div>
     )
 }
