@@ -35,8 +35,8 @@ const Home = () => {
     return (
         <div>
             <Navbar username={username}/>
-            <Chat/>
-            {/* <RoomSelection/> */}
+            {/* <Chat/> */}
+            <RoomSelection/>
         </div>
     )
 }
