@@ -94,12 +94,12 @@ router.get('/check_login_status',async (req,res)=>{
  {
   const cookie = req.cookies.watchParty;
   const { session_id, user_id } = cookie;
-  console.log(user_id);
+  // console.log(user_id);
 
    const user=await User.findOne({
      _id:user_id
    })
-   console.log(user);
+  //  console.log(user);
    res.send({
      status:true,
      username:user.username

@@ -1,35 +1,39 @@
-import React from "react";
-import styled from "styled-components";
-import { socket } from "./SocketConnection";
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import React,{useEffect} from "react";
 import "./Chat.css";
+// const {io} = require('socket.io-client')
+import {io} from "socket.io-client";
 
-const Chat = () => {
-  const [message, setMessage] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const sendMessage = () => {
-    const message2 = document.getElementById("message");
-    console.log("sending message", message2.value);
-    socket.emit("send-message", {
-      // username: cookies.get("username")
-      msg: message2.value,
-    });
-  };
+//  const socket = io("http://localhost:5000");
+// export default io;
 
-  console.log(socket);
-  useEffect(() => {
-    socket.on("recieve-message", (data) => {
-      // var ow = document.getElementById("ow");
-      console.log(data.msg);
-      // ow.innerHTML +=   data.msg;
-      setMessage(data.msg);
-      setMessages((messages) => [...messages, data.msg]);
-    });
-  }, []);
+const Chat = (props) => {
+//   const sendMessage = () => {
+//     const message2 = document.getElementById("message");
+//     console.log("sending message", message2.value);
+//     socket.emit("send-message", {
+//       msg: message2.value,
+//     });
+//   };
+//   socket.on("recieve-message", (data) => {
+//     console.log("message",data.msg);
+//     // const list=document.getElementById('message_list')
+//     // var entry = document.createElement("div");
+//     // entry.appendChild(document.createTextNode(data.msg));
+//     // list.appendChild(entry);
+//   });
+//   useEffect(()=>{
+// socket.on("connection", () => {
+//   console.log("connection", "connected");
+//   const list = document.getElementById("message_list");
+//   var entry = document.createElement("div");
+//   entry.appendChild(document.createTextNode("Connected to server"));
+//   list.appendChild(entry);
+// });
+//   })
+  
   return (
-    // <div>
     <div className="container">
+      Room:{props.room_id}
       <div className="chatbox">
         <div className="OutputWindow" id="ow">
           <div className="Output">
@@ -38,8 +42,9 @@ const Chat = () => {
             </div>
             <div className="Message"> message body</div>
           </div>
-          {messages &&
-            messages.map((msg) => <div className="Output">{msg}</div>)}
+          <ul id="message_list">
+            
+          </ul>
         </div>
         <div className="TypeMessage">
           <input

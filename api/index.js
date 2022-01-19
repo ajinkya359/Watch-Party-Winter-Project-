@@ -6,7 +6,8 @@ const authRoute = require("./routes/auth")
 const sessions=require("./routes/sessions")
 var cookieParser = require("cookie-parser");
 // const socket = require('socket.io')
-var cors = require('cors')
+var cors = require('cors');
+const { socket } = require("./routes/socket");
 
 dotenv.config();
 
@@ -53,9 +54,13 @@ io.on('connection', (socket)=>{      //listening for an event
 
   socket.on('send-message', function(data){   //When a message is sent form a client to the server. When the message with the name 'chat' comes from a client then the server will take the message
      console.log("message recieved", data.msg)
-      io.sockets.emit('recieve-message', data, console.log("emmiting msg from the server"));  //and will emit that message to all the sockets(i.e all the clients) connected to the server.
+      io.emit('recieve-message', data, console.log("emmiting msg from the server"));  //and will emit that message to all the sockets(i.e all the clients) connected to the server.
   });
 })               
 
 app.use("/api/auth", authRoute);
 app.use("/api/sessions",sessions)
+// app.use('/api/socket',socket)
+
+module.exports=server
+
