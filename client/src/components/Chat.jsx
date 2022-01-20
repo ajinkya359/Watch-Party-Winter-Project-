@@ -1,35 +1,35 @@
 import React,{useEffect} from "react";
 import "./Chat.css";
-// const {io} = require('socket.io-client')
-import {io} from "socket.io-client";
+const {io} = require('socket.io-client')
+// import {io} from "socket.io-client";
 
-//  const socket = io("http://localhost:5000");
+ const socket = io("http://localhost:5000");
 // export default io;
 
 const Chat = (props) => {
-//   const sendMessage = () => {
-//     const message2 = document.getElementById("message");
-//     console.log("sending message", message2.value);
-//     socket.emit("send-message", {
-//       msg: message2.value,
-//     });
-//   };
-//   socket.on("recieve-message", (data) => {
-//     console.log("message",data.msg);
-//     // const list=document.getElementById('message_list')
-//     // var entry = document.createElement("div");
-//     // entry.appendChild(document.createTextNode(data.msg));
-//     // list.appendChild(entry);
-//   });
-//   useEffect(()=>{
-// socket.on("connection", () => {
-//   console.log("connection", "connected");
-//   const list = document.getElementById("message_list");
-//   var entry = document.createElement("div");
-//   entry.appendChild(document.createTextNode("Connected to server"));
-//   list.appendChild(entry);
-// });
-//   })
+  const sendMessage = () => {
+    const message2 = document.getElementById("message");
+    console.log("sending message", message2.value);
+    socket.emit("send-message", {
+      msg: message2.value,
+    });
+  };
+  socket.on("recieve-message", (data) => {
+    console.log("message",data.msg);
+    // const list=document.getElementById('message_list')
+    // var entry = document.createElement("div");
+    // entry.appendChild(document.createTextNode(data.msg));
+    // list.appendChild(entry);
+  });
+  useEffect(()=>{
+socket.on("connection", () => {
+  console.log("connection", "connected");
+  const list = document.getElementById("message_list");
+  var entry = document.createElement("div");
+  entry.appendChild(document.createTextNode("Connected to server"));
+  list.appendChild(entry);
+});
+  })
   
   return (
     <div className="container">
