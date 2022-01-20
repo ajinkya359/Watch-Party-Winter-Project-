@@ -6,6 +6,7 @@ import "./Navbar.css";
 import Button from "@mui/material/Button";
 import { Avatar } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
+import { socket } from "./SocketConnection";
 
 
 function stringToColor(string) {
@@ -52,11 +53,13 @@ const Navbar = (props) => {
   
   const navigate = useNavigate();
   const handleLogout = async () => {
+    console.log(socket.disconnected)
+    if(socket.disconnected===false) socket.close()
     // console.log("Logging out");
     await axios
       .get(backend + "/logout", { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         const data = res.data;
         if (data.status) {
           navigate("/login");

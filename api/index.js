@@ -50,17 +50,28 @@ const io =  require('socket.io')(server , {               //To allow CORS for so
 )
 
 io.on('connection', (socket)=>{      //listening for an event
-  console.log('made socket connection', socket.id) ;
-
-  socket.on('send-message', function(data){   //When a message is sent form a client to the server. When the message with the name 'chat' comes from a client then the server will take the message
-     console.log("message recieved", data.msg)
-      io.emit('recieve-message', data, console.log("emmiting msg from the server"));  //and will emit that message to all the sockets(i.e all the clients) connected to the server.
-  });
+  socket.on('disconnect',()=>{
+    console.log("Disconnected");
+  })
+  socket.on('join-room',(room_id,username,cb)=>{
+    console.log(`${username} joined room ${room_id}`)
+    socket.join(room_id)
+    const m={
+      username:"Server",
+      msg:`${username} joined room`
+    }
+    socket.to(room_id).emit('recieve-message-from-server', m, console.log("emmiting msg from the server"));  //and will emit that message to all the sockets(i.e all the clients) connected to the server.
+    cb(m)
+  })
+  socket.on('send-message-to-server', (data,cb)=>{   //When a message is sent form a client to the server. When the message with the name 'chat' comes from a client then the server will take the message
+     console.log("message recieved", data)
+      socket.to(data.room_id).emit('recieve-message-from-server', data, console.log("emmiting msg from the server"));  //and will emit that message to all the sockets(i.e all the clients) connected to the server.
+      cb(data.username,data.msg)
+    });
 })               
 
 app.use("/api/auth", authRoute);
 app.use("/api/sessions",sessions)
-// app.use('/api/socket',socket)
 
 module.exports=server
 
