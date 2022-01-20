@@ -1,61 +1,88 @@
-import React,{useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import "./Chat.css";
-// const {io} = require('socket.io-client')
-import {io} from "socket.io-client";
-
-//  const socket = io("http://localhost:5000");
-// export default io;
-
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import SendIcon from "@material-ui/icons/Send";
+import Message from "./Message/Message";
+import { socket } from "./SocketConnection";
 const Chat = (props) => {
-//   const sendMessage = () => {
-//     const message2 = document.getElementById("message");
-//     console.log("sending message", message2.value);
-//     socket.emit("send-message", {
-//       msg: message2.value,
-//     });
-//   };
-//   socket.on("recieve-message", (data) => {
-//     console.log("message",data.msg);
-//     // const list=document.getElementById('message_list')
-//     // var entry = document.createElement("div");
-//     // entry.appendChild(document.createTextNode(data.msg));
-//     // list.appendChild(entry);
-//   });
-//   useEffect(()=>{
-// socket.on("connection", () => {
-//   console.log("connection", "connected");
-//   const list = document.getElementById("message_list");
-//   var entry = document.createElement("div");
-//   entry.appendChild(document.createTextNode("Connected to server"));
-//   list.appendChild(entry);
-// });
-//   })
+  socket.connect()
+  const [messages, setMessages] = useState([]);
+  const sendMessage = () => {
+    const message2 = document.getElementById("message");
+    console.log("sending_message_to_server", message2.value);
+    socket.emit("send-message-to-server", {
+      msg: message2.value,
+      username:props.username,
+
+        room_id:props.room_id
+    },(username,msg)=>{
+      const m = {
+        user_name: username,
+        content: msg,
+      };
+      setMessages((messages) => [...messages, m]);
+    });
+  };
+
+
+
+  useEffect(() => {
+    // socket.on('disconnect',props.username,()=>{
+    //   console.log("disconnected");
+    // })
+    socket.on('connect',()=>{
+      
+      console.log("Connected")
+      
+      socket.emit('join-room',props.room_id,props.username,(m)=>{
+
+        setMessages((messages) => [...messages, {user_name:m.username,content:m.msg}]);
+      })
+      
+    })
+    socket.on("recieve-message-from-server", (data) => {
+      const m = {
+        user_name:data.username,
+        content: data.msg,
+      };
+      setMessages((messages) => [...messages, m]);
+    });
+  }, []);
   
   return (
     <div className="container">
-      Room:{props.room_id}
+      <div>
+        <h1>Room:{props.room_id}</h1>
+      </div>
       <div className="chatbox">
-        <div className="OutputWindow" id="ow">
-          <div className="Output">
-            <div className="Username">
-              <b>username:</b>
-            </div>
-            <div className="Message"> message body</div>
-          </div>
-          <ul id="message_list">
-            
-          </ul>
+        <div id="message_list">
+          {messages &&
+            messages.map((msg, id) => (
+              <Message
+                key={id}
+                user_name={msg.user_name}
+                content={msg.content}
+              />
+            ))}
+ 
         </div>
-        <div className="TypeMessage">
-          <input
-            className="Input"
-            id="message"
-            placeholder="Type here.." /*onChange={ (e) => {setmessage(e.target.value)}}*/
-          ></input>
-          <div className="Send" id="send" onClick={sendMessage}>
-            Send
-          </div>
-        </div>
+      </div>
+      <div className="TypeMessage">
+        <TextField
+          label="Enter message"
+          className="message_input"
+          variant="outlined"
+          id="message"
+        />
+        <Button
+          variant="contained"
+          className="send_button"
+          endIcon={<SendIcon />}
+          onClick={sendMessage}
+        >
+          Send
+        </Button>
       </div>
     </div>
   );

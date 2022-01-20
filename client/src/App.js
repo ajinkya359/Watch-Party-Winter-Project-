@@ -1,6 +1,7 @@
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { render } from "react-dom";
+import './App.css'
 import {
   BrowserRouter,
   Routes,
@@ -11,6 +12,7 @@ import { RoomId } from "./Context/room_id";
 
 function App() {
   return (
+    <div className="App">
     <BrowserRouter>
     <Routes>
       <Route path="/home" element={<Home />} />
@@ -19,6 +21,7 @@ function App() {
       <Route path="*" element={"Page not found"} />
     </Routes>
   </BrowserRouter>
+  </div>
   );
 }
 
