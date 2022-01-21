@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 app.use(express.json())
 app.use(cookieParser());
 // app.use(cors())
-const server = app.listen(5000, ()=>{
+const server = app.listen(process.env.PORT||5000, ()=>{
     console.log("App listening on port 5000");
 })
 
@@ -68,6 +68,9 @@ io.on('connection', (socket)=>{      //listening for an event
     socket.to(room_id).emit("get-video-url-from-server",url)
     // cb(url)
   })
+  socket.on('this_is_the_url',(url,socket_id,time)=>{
+    socket.to(socket_id).emit("resume_watching_the_show",url,time)
+  })
   socket.on('join-room',(room_id,username,cb)=>{
     console.log(`${username} joined room ${room_id}`)
     socket.join(room_id)
@@ -76,6 +79,7 @@ io.on('connection', (socket)=>{      //listening for an event
       msg:`${username} joined room`
     }
     socket.to(room_id).emit('recieve-message-from-server', m, console.log("emmiting msg from the server"));  //and will emit that message to all the sockets(i.e all the clients) connected to the server.
+    socket.to(room_id).emit("get_him_the_url_if_there",socket.id)
     cb(m)
   })
   socket.on('send-message-to-server', (data,cb)=>{   //When a message is sent form a client to the server. When the message with the name 'chat' comes from a client then the server will take the message
