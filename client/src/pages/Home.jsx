@@ -8,6 +8,7 @@ import "./Home.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import RoomSelection from "../components/RoomSelection/RoomSelection";
 import { RoomId } from "../Context/room_id";
+import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
 
 const Main = styled.div`
   display: flex;
@@ -46,7 +47,10 @@ const Home = () => {
         {room_id === "" ? (
           <RoomSelection setroom_id={setroom_id} />
         ) : (
+          <div className="main_content">
+          <VideoPlayer room_id={room_id}/>
           <Chat room_id={room_id} username={username} />
+          </div>
         )}
         {/* <Chat/> */}
       </div>

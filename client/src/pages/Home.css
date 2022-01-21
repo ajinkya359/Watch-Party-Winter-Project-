@@ -10,3 +10,8 @@
     flex-direction: row;
     justify-content: space-between;
 } */
+.main_content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
