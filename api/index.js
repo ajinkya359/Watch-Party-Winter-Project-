@@ -8,6 +8,7 @@ var cookieParser = require("cookie-parser");
 // const socket = require('socket.io')
 var cors = require('cors');
 const { socket } = require("./routes/socket");
+const { urlencoded } = require("express");
 
 dotenv.config();
 
@@ -52,6 +53,20 @@ const io =  require('socket.io')(server , {               //To allow CORS for so
 io.on('connection', (socket)=>{      //listening for an event
   socket.on('disconnect',()=>{
     console.log("Disconnected");
+  })
+  socket.on("play_the_video_from_client",(room_id,time)=>{
+    socket.to(room_id).emit("play_the_video_from_server",time)
+    // cb(true)
+
+  })
+  socket.on("pause_the_video_from_client",(room_id,time)=>{
+    socket.to(room_id).emit("pause_the_video_from_server",time)
+    // cb(false)
+  })
+  socket.on("send-video-url-to-server",(url,room_id)=>{
+    console.log(url)
+    socket.to(room_id).emit("get-video-url-from-server",url)
+    // cb(url)
   })
   socket.on('join-room',(room_id,username,cb)=>{
     console.log(`${username} joined room ${room_id}`)
