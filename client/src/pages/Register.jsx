@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { mobile } from '../responsive'
 import { getUserCall, RegisterCall } from '../ApiCalls'
 import { Link } from 'react-router-dom'
-
-
+import spinnerImg from '../images/spinnerImg.gif'
 
 const Container = styled.div`
 width: 100vw;
@@ -22,7 +21,8 @@ align-items: center;
 justify-content: center;
 `
 const Wrapper = styled.div`
-padding: 20px;
+padding: 25px;
+padding-bottom: 50px;
 width: 40%;
 background-color: white;
 border-radius: 10px;
@@ -70,6 +70,18 @@ const LINK = styled.a`
     font-size: 15px;
 `
 
+const Spinner = styled.img`
+  width: 45px;
+  height: 45px;
+`
+const Loader = styled.div`
+text-align: center;
+margin-top: 20px;
+margin-left: 50px;
+display: none;
+`
+
+
 const Register = ({currUser, setCurrUser}) => {
     const [username, setusername] = useState("")
     const [email, setemail] = useState("")
@@ -78,20 +90,22 @@ const Register = ({currUser, setCurrUser}) => {
     const [error,seterror]=useState("")
 
     useEffect( async() => {
+        document.getElementById("loader").style.display="block";
         const res = await getUserCall();
-        if(res.status === 200)
+        document.getElementById("loader").style.display="none";
+        if(res.data.User)
          {
-          
-             setCurrUser(res.data.username)
+             setCurrUser(res.data.User.username)
          }
          else{
-    
              setCurrUser(null);
          }
     }, []);
+
     useEffect(() => {
         if(error){
-            document.getElementById("err").style.display="block"
+            document.getElementById("err").style.display="block";
+            document.getElementById("loader").style.display="none";
         }
         else{
             document.getElementById("err").style.display="none"
@@ -100,6 +114,7 @@ const Register = ({currUser, setCurrUser}) => {
     
     const handleClick=async(e)=>{
         e.preventDefault();
+        document.getElementById("loader").style.display="block";
         seterror(null);
         const data={
             email:email,
@@ -110,12 +125,16 @@ const Register = ({currUser, setCurrUser}) => {
     
         if(res1.data.error){
             seterror(true);
-
          }
         const res2 = await getUserCall();
-        if(res2.status === 200)
+
+        document.getElementById("loader").style.display="none";
+        if(res2.data.User)
          {
-             setCurrUser(res2.data.username)
+             setCurrUser(res2.data.User.username)
+         }
+         else{
+             setCurrUser(null);
          }
     }
 
@@ -133,6 +152,9 @@ const Register = ({currUser, setCurrUser}) => {
                     <Button onClick={handleClick}>CREATE</Button>
                     <LINK >Already have an account ? <Link to="/login"> Login</Link> </LINK>
                     <Error id="err">Something went wrong..</Error>
+                    <Loader id="loader">
+                <Spinner src={spinnerImg} alt="loader" ></Spinner>
+                </Loader>                    
                 </Form>
             </Wrapper>
         </Container>
