@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import styled from 'styled-components'
 import { mobile } from '../responsive'
 import img from '../images/login.png'
 import {Link} from "react-router-dom"
-import axios from 'axios' 
-import { backend } from '../backend'
+import { useNavigate } from 'react-router-dom';
+import { getUserCall, LoginCall } from '../ApiCalls'
 
 const Container = styled.div`
 width: 100vw;
@@ -67,55 +67,72 @@ margin-top: 10px;
 `
 const LINK = styled.a`
     margin: 5px 0px;
-    font-size: 12px;
-    text-decoration: underline;
-    border: 1px solid red;
-    width: 100px;
-    cursor: pointer;
+    font-size: 15px;
 `
 const Error = styled.span`
     color: red;
     font-size: 15px;
 `
 
-const Login = () => {
+const Login = ({currUser, setCurrUser}) => {
+
+    const navigate=useNavigate();
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
-    const [error,seterror]=useState("")
+    const [error,seterror]=useState(false)
+    
+
+    useEffect( async() => {
+        const res = await getUserCall();
+        if(res.status === 200)
+         {
+             setCurrUser(res.data.username)
+         }
+         else{
+             setCurrUser(null);
+         }
+    }, []);
+    
+    useEffect(() => {
+        if(error){
+            document.getElementById("err").style.display="block"
+        }
+        else{
+            document.getElementById("err").style.display="none"
+        }
+    }, [error]);
+    
+
     const handleClick = async (e)=>{
         e.preventDefault();
+        seterror(null);
         const data={
             email:email,
             password:password
         }
-        await axios.post(backend+"/login",data,{withCredentials:true})
-        .then(res=>{
-            const data=res.data;
-            if(data.status) {
-                seterror("Logged In")
-                console.log("Login","Logged in");}
-            else{
-                seterror(data.error)
-                console.log("Login",data.error);
-            }
-            
-        }).catch(err=>{
-            console.log("Login",err);
+
+        const res1 = await LoginCall(data);    //Api call for login. Imported from apiCalls.js file 
+        if(res1.data.error){
+           seterror(true);
         }
-        )
-        console.log(email,password);
+        const res2 = await getUserCall();
+        if(res2.status === 200)
+         {
+             setCurrUser(res2.data.username)
+         }     
+      
+      
     }
-    return (
+        return (
         <Container>
         <Wrapper>
             <Title>SIGN IN</Title>
             <Form>
-                <Input type="email" placeholder="email" onChange={(e)=> setemail(e.target.value)}/>
-                <Input type="password" placeholder="password" onChange={(e)=> setpassword(e.target.value)}/>
+                <Input type="email" placeholder="email" onChange={(e)=> setemail(e.target.value)} required/>
+                <Input type="password" minLength={5} placeholder="password" onChange={(e)=> setpassword(e.target.value)} required/>
                 <Button onClick={handleClick} >LOGIN</Button>  
-                {error.length!==0 && <Error>{error}</Error>} 
-                <LINK>Forgot password ?</LINK>
-                <LINK style={{"width": "45px"}}> Register </LINK>
+                <Error id="err">Something went wrong..</Error>
+                <LINK >Don't have an account ? <Link to="/register"> Register</Link> </LINK>
 
             </Form>
         </Wrapper>

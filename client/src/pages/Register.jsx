@@ -1,8 +1,8 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import styled from 'styled-components'
 import { mobile } from '../responsive'
-import axios from 'axios' 
-import { backend } from '../backend'
+import { getUserCall, RegisterCall } from '../ApiCalls'
+import { Link } from 'react-router-dom'
 
 
 
@@ -37,7 +37,13 @@ font-weight: 300;
 const Form = styled.form`
 display: flex;
 flex-wrap: wrap;
+height: 255px;
 `
+const Error = styled.span`
+    color: red;
+    font-size: 15px;
+`
+
 
 const Input = styled.input`
 flex: 1;
@@ -59,37 +65,58 @@ color: white;
 cursor: pointer;
 margin-left: 29%;
 `
+const LINK = styled.a`
+    margin: 10px 0px;
+    font-size: 15px;
+`
 
-const Register = () => {
+const Register = ({currUser, setCurrUser}) => {
     const [username, setusername] = useState("")
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
     const [passwordagain, setpasswordagain] = useState("")
     const [error,seterror]=useState("")
 
+    useEffect( async() => {
+        const res = await getUserCall();
+        if(res.status === 200)
+         {
+          
+             setCurrUser(res.data.username)
+         }
+         else{
+    
+             setCurrUser(null);
+         }
+    }, []);
+    useEffect(() => {
+        if(error){
+            document.getElementById("err").style.display="block"
+        }
+        else{
+            document.getElementById("err").style.display="none"
+        }
+    }, [error]);
+    
     const handleClick=async(e)=>{
         e.preventDefault();
+        seterror(null);
         const data={
             email:email,
             password:password,
             username:username
         }
-        await axios.post(backend+"/register",data,{withCredentials:true})
-        .then(res=>{
-            const data=res.data;
-            if(data.status) {
-                seterror("Registered")
-                console.log("Login","Logged in");}
-            else{
-                seterror(data.error)
-                console.log("Login",data.error);
-            }
-            
-        }).catch(err=>{
-            console.log("Login",err);
-        }
-        )
-        
+        const res1 = await RegisterCall(data);
+    
+        if(res1.data.error){
+            seterror(true);
+
+         }
+        const res2 = await getUserCall();
+        if(res2.status === 200)
+         {
+             setCurrUser(res2.data.username)
+         }
     }
 
 
@@ -102,9 +129,10 @@ const Register = () => {
                     <Input placeholder="email" onChange={(e)=> setemail(e.target.value)}/>
                     <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)}/>
                     <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)}/>
-                    <div style={{"color":"red"}}>{error}</div>
                     <Agreement>By creating an account, I consert to the processing of my personal data in accordance with the <b>PRIVACY POLICY</b></Agreement>
                     <Button onClick={handleClick}>CREATE</Button>
+                    <LINK >Already have an account ? <Link to="/login"> Login</Link> </LINK>
+                    <Error id="err">Something went wrong..</Error>
                 </Form>
             </Wrapper>
         </Container>
