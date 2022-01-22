@@ -17,19 +17,20 @@ mongoose.connect(process.env.MONGO_URL)
     console.log(err);
 });
 
-app.use(cors());
+// app.use(cors());
 app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  
+    res.setHeader("Access-Control-Allow-Origin", "https://kind-bell-f2c270.netlify.app");
+
     res.setHeader(
       "Access-Control-Allow-Methods",
       "GET, POST, OPTIONS, PUT, PATCH, DELETE"
     );
-  
+
     res.setHeader(
       "Access-Control-Allow-Headers",
       "X-Requested-With,content-type"
     );
+
     res.setHeader("Access-Control-Allow-Credentials", true);
     next();
   });
@@ -43,7 +44,9 @@ const server = app.listen(PORT, ()=>{
 })
 
 
+// app.get('/', ()=>{"server is up and running"})
 app.use("/api/auth", authRoute);
+
 
 const io = socketio(server, {
   cors: {

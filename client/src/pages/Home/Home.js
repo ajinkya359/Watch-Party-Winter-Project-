@@ -8,7 +8,10 @@ import io from 'socket.io-client'
 
 let socket = null;
 
-const ENDPOINT = "http://localhost:5000";
+// const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = process.env.NODE_ENV ? "https://watch-party-sarthak.herokuapp.com/" : "http://localhost:5000";                     
+// const ENDPOINT = "https://watch-party-sarthak.herokuapp.com/";
+
 const Home = ({room_id, username}) => {
 
   const [Socket, setSocket] = useState(null);
