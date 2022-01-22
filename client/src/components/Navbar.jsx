@@ -1,12 +1,11 @@
 import React from "react";
-import axios from "axios";
-import { backend } from "../backend";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import Button from "@mui/material/Button";
 import { Avatar } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
-
+import { LogoutCall } from "../ApiCalls";
+import {socket} from "../pages/Home/Home"
 
 function stringToColor(string) {
   let hash = 0;
@@ -48,26 +47,18 @@ function stringAvatar(name) {
 }
 
 
-const Navbar = (props) => {
+const Navbar = ({currUser, setCurrUser}) => {
   
   const navigate = useNavigate();
+
   const handleLogout = async () => {
-    // console.log("Logging out");
-    await axios
-      .get(backend + "/logout", { withCredentials: true })
-      .then((res) => {
-        console.log(res.data);
-        const data = res.data;
-        if (data.status) {
-          navigate("/login");
-        } else {
-          alert("Not logged in");
-          navigate("/login");
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-  console.log("navbar", props);
+    socket && socket.disconnect();
+   const res = await LogoutCall();
+   if(res.status === 200){
+     setCurrUser(null);
+   }
+  }
+
   return (
     <div className="navbar_body">
       <div className="website_name">
@@ -75,8 +66,8 @@ const Navbar = (props) => {
       </div>
       <div className="nav_bar_details">
         <div className="user_details">
-          <Tooltip title={props.username||"Hello"}>
-          <Avatar {...stringAvatar(props.username)} />
+          <Tooltip title={ currUser||"Hello"}>
+          <Avatar {...stringAvatar(currUser)} />
           </Tooltip>
         </div>
         <div className="about_us">About Us</div>
