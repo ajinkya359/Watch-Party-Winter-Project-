@@ -8,28 +8,31 @@ import io from 'socket.io-client'
 
 let socket = null;
 
-// const ENDPOINT = "http://localhost:5000";
-const ENDPOINT = process.env.NODE_ENV ? "https://watch-party-sarthak.herokuapp.com/" : "http://localhost:5000";                     
+const ENDPOINT = "http://localhost:5000";
+// const ENDPOINT = process.env.NODE_ENV ? "https://watch-party-sarthak.herokuapp.com/" : "http://localhost:5000";                     
 // const ENDPOINT = "https://watch-party-sarthak.herokuapp.com/";
 
-const Home = ({room_id, username}) => {
+const Home = ({room_credentials, username}) => {
 
   const [Socket, setSocket] = useState(null);
+
+  // const room_id = room_credentials.room_id;
+  // const room_pass = room_credentials.room_pass;
 
   const navigate = useNavigate();
   useEffect(()=>{
  
-    if(room_id && username){
+    if(room_credentials && username){
       
        socket= io(ENDPOINT)
        setSocket( socket );
        
     }
-  }, [room_id, username]);
+  }, [room_credentials, username]);
 
   useEffect(() => {
     if(Socket){
-      Socket.emit('join', {username, room_id} , (error)=>{ 
+      Socket.emit('join', {username, room_credentials} , (error)=>{ 
         if(error){                                         
             Socket.disconnect();                           
             navigate("/login");                             
@@ -40,10 +43,9 @@ const Home = ({room_id, username}) => {
     }
   }, [Socket]);
   
-
-
   const [users, setusers] = useState(null);
 
+  const room_id = room_credentials.room_id;
   return (<div >
       {/* <Navbar/> */}
       <RoomData users={users}/>      

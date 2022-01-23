@@ -5,11 +5,13 @@
 .room_selection_buttons{
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     /* border: 2px solid black; */
     margin: 10% 38%;
 }
 #room_btn{
     height: 7vh;
+    margin-top: 20px;
 }
 @media screen and (max-width : 480px) {
     .room_selection_buttons{

@@ -9,7 +9,6 @@ const addUser =({ socket_id, username, room_id})=>{
       return{error: "User already connected"}
   }
   const user = {socket_id, username, room_id};
-  
   users.push(user);
   return {user};
 }

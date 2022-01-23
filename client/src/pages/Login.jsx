@@ -5,6 +5,7 @@ import img from '../images/login.png'
 import {Link} from "react-router-dom"
 import { useNavigate } from 'react-router-dom';
 import { getUserCall, LoginCall } from '../ApiCalls'
+import spinnerImg from '../images/spinnerImg.gif'
 
 const Container = styled.div`
 width: 100vw;
@@ -73,6 +74,14 @@ const Error = styled.span`
     color: red;
     font-size: 15px;
 `
+const Spinner = styled.img`
+  width: 45px;
+  height: 45px;
+`
+const Loader = styled.div`
+text-align: center;
+display: none;
+`
 
 const Login = ({currUser, setCurrUser}) => {
 
@@ -80,22 +89,31 @@ const Login = ({currUser, setCurrUser}) => {
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
     const [error,seterror]=useState(false)
-    
+    // const loader = document.getElementById("loader")
 
     useEffect( async() => {
+        
+        document.getElementById("loader").style.display="block";
+
         const res = await getUserCall();
-        if(res.status === 200)
+        
+        
+        document.getElementById("loader").style.display="none";
+        
+        
+        if(res.data.User)
          {
-             setCurrUser(res.data.username)
-         }
-         else{
-             setCurrUser(null);
-         }
+            setCurrUser(res.data.User.username);
+         }     
+        else{
+            setCurrUser(null);
+        }
     }, []);
     
     useEffect(() => {
         if(error){
             document.getElementById("err").style.display="block"
+            document.getElementById("loader").style.display="none";
         }
         else{
             document.getElementById("err").style.display="none"
@@ -105,22 +123,31 @@ const Login = ({currUser, setCurrUser}) => {
 
     const handleClick = async (e)=>{
         e.preventDefault();
+
+        document.getElementById("loader").style.display="block";
+
         seterror(null);
         const data={
             email:email,
             password:password
         }
+        
 
         const res1 = await LoginCall(data);    //Api call for login. Imported from apiCalls.js file 
         if(res1.data.error){
            seterror(true);
+
         }
+
         const res2 = await getUserCall();
-        if(res2.status === 200)
+        document.getElementById("loader").style.display="none";
+        if(res2.data.User)
          {
-             setCurrUser(res2.data.username)
+            setCurrUser(res2.data.User.username);
          }     
-      
+        else{
+            setCurrUser(null);
+        }
       
     }
         return (
@@ -133,7 +160,9 @@ const Login = ({currUser, setCurrUser}) => {
                 <Button onClick={handleClick} >LOGIN</Button>  
                 <Error id="err">Something went wrong..</Error>
                 <LINK >Don't have an account ? <Link to="/register"> Register</Link> </LINK>
-
+                <Loader id="loader">
+                <Spinner src={spinnerImg} alt="loader" ></Spinner>
+                </Loader>
             </Form>
         </Wrapper>
     </Container>
