@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const baseURL = "http://localhost:5000/api/auth";
-const baseURL = process.env.NODE_ENV ? "https://watch-party-sarthak.herokuapp.com/api/auth" : "http://localhost:5000/api/auth";                     
+const baseURL = "http://localhost:5000/api/auth";
+// const baseURL = process.env.NODE_ENV ? "https://watch-party-sarthak.herokuapp.com/api/auth" : "http://localhost:5000/api/auth";                     
 
 // const baseURL = "https://watch-party-sarthak.herokuapp.com/api/auth"
 
