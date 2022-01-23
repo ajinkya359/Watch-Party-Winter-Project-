@@ -107,17 +107,17 @@ async(req,res)=>{
 //GET USER: 
 router.get("/getUser", verifyToken ,async(req, res)=>{
   const userId= req.user.id;
-  
+  console.log(req.cookies);
   try{
       const getUser = await User.findById(userId);
       if(getUser){
-          return res.status(200).json(getUser);
+          return res.status(200).json({User : getUser});
       }
       else{
-        return res.status(400).json("User not found");    
+        return res.json({error : "User not found"});    
       }
   }catch(err){
-      return res.status(400).json("Some error occured");
+      return res.json({error : "Some error occured"});
   }
 
 })
@@ -128,7 +128,7 @@ router.get("/logout", async(req,res)=>{
      res.clearCookie('authToken', {sameSite: "none", secure : true});
      return res.status(200).json("Logout success")
     }catch(err){
-     return res.status(400).json("Some error occured")
+     return res.json({error : "Some error occured"})
 }
 })
 
