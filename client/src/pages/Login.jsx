@@ -94,12 +94,11 @@ const Login = ({currUser, setCurrUser}) => {
     useEffect( async() => {
         
         document.getElementById("loader").style.display="block";
-
+        document.getElementById("loginBtn").disabled=true;
         const res = await getUserCall();
         
-        
         document.getElementById("loader").style.display="none";
-        
+        document.getElementById("loginBtn").disabled=false;
         
         if(res.data.User)
          {
@@ -114,9 +113,11 @@ const Login = ({currUser, setCurrUser}) => {
         if(error){
             document.getElementById("err").style.display="block"
             document.getElementById("loader").style.display="none";
+            document.getElementById("loginBtn").disabled=false;
         }
         else{
-            document.getElementById("err").style.display="none"
+            document.getElementById("err").style.display="none";
+            document.getElementById("loginBtn").disabled=false;
         }
     }, [error]);
     
@@ -125,6 +126,7 @@ const Login = ({currUser, setCurrUser}) => {
         e.preventDefault();
 
         document.getElementById("loader").style.display="block";
+        document.getElementById("loginBtn").disabled=true;
 
         seterror(null);
         const data={
@@ -141,6 +143,7 @@ const Login = ({currUser, setCurrUser}) => {
 
         const res2 = await getUserCall();
         document.getElementById("loader").style.display="none";
+        document.getElementById("loginBtn").disabled=false;
         if(res2.data.User)
          {
             setCurrUser(res2.data.User.username);
@@ -157,7 +160,7 @@ const Login = ({currUser, setCurrUser}) => {
             <Form>
                 <Input type="email" placeholder="email" onChange={(e)=> setemail(e.target.value)} required/>
                 <Input type="password" minLength={5} placeholder="password" onChange={(e)=> setpassword(e.target.value)} required/>
-                <Button onClick={handleClick} >LOGIN</Button>  
+                <Button id="loginBtn" onClick={handleClick} >LOGIN</Button>  
                 <Error id="err">Something went wrong..</Error>
                 <LINK >Don't have an account ? <Link to="/register"> Register</Link> </LINK>
                 <Loader id="loader">

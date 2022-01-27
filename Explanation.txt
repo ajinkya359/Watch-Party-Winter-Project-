@@ -1,0 +1,32 @@
+We are creating a Watch Party app. 
+In this app people can create rooms (along with room passwords).
+People can join a room using room_id and password. 
+People can chat in their room. They can also watch any video in sync using it's URL. 
+
+When a user enters room_id and room_password and hit on join button ..if the room exists
+then it's password will be checked. If correct password then he will get joined. Else "Invalid
+password" alert will come. 
+If the room doesn't exists then a new room with that Id and password will get created.
+
+We created a rooms array in backend. Whenever a join request is emitted from the frontend it will come
+on the backend. Then first it will be checked wether the room is present in rooms array or not. 
+If present then it's password will be checked and if correct password then the user will get joined in 
+that room and the count of users in that room will get incremented by 1. 
+Similarly if a user leaves a room then his name from the users array will get deleted and
+the count of users in that room will get decremented by 1. If the count becomes zero then that room 
+will also get deleted from the rooms array. 
+
+So if all the users leave a room then the room will also get deleted.
+
+Video streaming : 
+When a user enters the video URL in the input bar and clicks on the upload to everyone button 
+then the videoURL request will get emitted from the frontend. And thenthe backend will broadcat it all the other users in that room.
+When a user play/ pauses/ starts the video then the request will get emitted alonf with the timestamp(i.e timestamp of the video). 
+Then the server will broadcat it and then all the other users will recieve that request and their video will get seekTo that timestamp. 
+Like if a user pauses on 5:32 then a pause request along with 5:32 will get emitted .Then the server will broadcast it. 
+And when other users will recieve it their video will get paused and will get seekTo 5:32. So no matter on which timestamp their video was playing it will come to 5:32. 
+This is done to minimize the difference in all the users and to ensure all users are in sync. 
+Same for play. 
+Same for start. Suppose i uplaoaded the video and started my video and my video started playing but at one of the user 
+due to poor internet his video was loading but my video reached at suppose 5 sec. Now when his video will start a play request will get emitted with the timestamp 
+and my video will also come back to 0. So our videos will get sync.
