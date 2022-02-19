@@ -65,13 +65,13 @@ io.on("connection", (socket) => {
     console.log("recieved join request");
     const {error1, room_id} = findRoom({room_id : room_credentials.room_id, room_pass : room_credentials.room_pass})
     if(error1){
-      return callback(error1);
+       callback(error1);
     }
-
+  else{
     const {error, user} = addUser({socket_id: socket.id, username, room_id})
    
     if(error){               
-       return callback(error);
+        callback(error);
     }
    
     count_increment(room_id);
@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
      
    io.to(user.room_id).emit('roomData', { room_id: user.room_id, users: getUsersInRoom(user.room_id)})
     callback();
-
+  }
    })
    
  

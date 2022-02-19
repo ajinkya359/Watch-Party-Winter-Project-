@@ -34,8 +34,9 @@ const Home = ({room_credentials, username}) => {
       Socket.emit('join', {username, room_credentials} , (error)=>{ 
         if(error){                                         
             Socket.disconnect();                           
-            navigate("/login");                             
             alert(error); 
+            navigate("/login");                             
+            
         }
       })
 

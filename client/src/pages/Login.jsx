@@ -138,7 +138,6 @@ const Login = ({currUser, setCurrUser}) => {
         const res1 = await LoginCall(data);    //Api call for login. Imported from apiCalls.js file 
         if(res1.data.error){
            seterror(true);
-
         }
 
         const res2 = await getUserCall();
