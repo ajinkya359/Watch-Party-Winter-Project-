@@ -107,7 +107,7 @@ async(req,res)=>{
 //GET USER: 
 router.get("/getUser", verifyToken ,async(req, res)=>{
   const userId= req.user.id;
-  console.log(req.cookies);
+  console.log(req.cookies); 
   try{
       const getUser = await User.findById(userId);
       if(getUser){

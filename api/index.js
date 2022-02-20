@@ -20,9 +20,9 @@ mongoose.connect(process.env.MONGO_URL)
 
 // app.use(cors());
 app.use((req, res, next) => {
-    // res.setHeader("Access-Control-Allow-Origin", "https://kind-bell-f2c270.netlify.app");
+    res.setHeader("Access-Control-Allow-Origin", "https://kind-bell-f2c270.netlify.app");
 
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 
     res.setHeader(
       "Access-Control-Allow-Methods",
@@ -65,13 +65,14 @@ io.on("connection", (socket) => {
     console.log("recieved join request");
     const {error1, room_id} = findRoom({room_id : room_credentials.room_id, room_pass : room_credentials.room_pass})
     if(error1){
+      console.log("line no 68",error1);
       return callback(error1);
     }
-
+  
     const {error, user} = addUser({socket_id: socket.id, username, room_id})
    
     if(error){               
-       return callback(error);
+        return callback(error);
     }
    
     count_increment(room_id);
@@ -83,7 +84,7 @@ io.on("connection", (socket) => {
      
    io.to(user.room_id).emit('roomData', { room_id: user.room_id, users: getUsersInRoom(user.room_id)})
     callback();
-
+  
    })
    
  
@@ -114,6 +115,9 @@ io.on("connection", (socket) => {
    })
    socket.on('disconnect', ()=>{
        const user = removeUser(socket.id);
+       if(!user){
+        return;
+      } 
        count_decrement(user.room_id);
        console.log(`${socket.id} disconnected`);
  

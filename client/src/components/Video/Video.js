@@ -95,16 +95,7 @@ const Video = ({Socket}) => {
     }
   }
   
-  // const handleRateChange = (speed)=>{
-  //   if(Socket){
-  //     console.log("Speed:" , parseFloat(speed));
-  //     setPlaybackRate(parseFloat(speed));
-  //   }
-  // else{
-  //   alert("Connection not established. Please try again")
-  // }
-  // }
-
+  
   const handleSeek = (e)=>{
     console.log("seek", e);
   }

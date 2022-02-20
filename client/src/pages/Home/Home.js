@@ -8,9 +8,8 @@ import io from 'socket.io-client'
 
 let socket = null;
 
-const ENDPOINT = "http://localhost:5000";
-// const ENDPOINT = process.env.NODE_ENV ? "https://watch-party-sarthak.herokuapp.com/" : "http://localhost:5000";                     
-// const ENDPOINT = "https://watch-party-sarthak.herokuapp.com/";
+// const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://watch-party-sarthak.herokuapp.com/";
 
 const Home = ({room_credentials, username}) => {
 
@@ -35,8 +34,9 @@ const Home = ({room_credentials, username}) => {
       Socket.emit('join', {username, room_credentials} , (error)=>{ 
         if(error){                                         
             Socket.disconnect();                           
-            navigate("/login");                             
             alert(error); 
+            navigate("/login");                             
+            
         }
       })
 

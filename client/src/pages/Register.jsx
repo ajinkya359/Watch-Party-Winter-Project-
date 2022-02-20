@@ -26,7 +26,7 @@ padding-bottom: 50px;
 width: 40%;
 background-color: white;
 border-radius: 10px;
-${mobile({ width: "80%",})}
+${mobile({ width: "80%"})}
 `
 const Title = styled.h1`
 font-size: 24px;
@@ -91,8 +91,10 @@ const Register = ({currUser, setCurrUser}) => {
 
     useEffect( async() => {
         document.getElementById("loader").style.display="block";
+        document.getElementById("registerBtn").disabled=true;
         const res = await getUserCall();
         document.getElementById("loader").style.display="none";
+        document.getElementById("registerBtn").disabled=false;
         if(res.data.User)
          {
              setCurrUser(res.data.User.username)
@@ -115,6 +117,7 @@ const Register = ({currUser, setCurrUser}) => {
     const handleClick=async(e)=>{
         e.preventDefault();
         document.getElementById("loader").style.display="block";
+        document.getElementById("registerBtn").disabled=true;
         seterror(null);
         const data={
             email:email,
@@ -129,6 +132,7 @@ const Register = ({currUser, setCurrUser}) => {
         const res2 = await getUserCall();
 
         document.getElementById("loader").style.display="none";
+        document.getElementById("registerBtn").disabled=false;
         if(res2.data.User)
          {
              setCurrUser(res2.data.User.username)
@@ -145,11 +149,11 @@ const Register = ({currUser, setCurrUser}) => {
                 <Title>CREATE AN ACCOUNT</Title>
                 <Form className='form'>
                     <Input placeholder="username"onChange={(e)=> setusername(e.target.value)}/>
-                    <Input placeholder="email" onChange={(e)=> setemail(e.target.value)}/>
-                    <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)}/>
-                    <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)}/>
+                    <Input placeholder="email" onChange={(e)=> setemail(e.target.value)} type="email"/>
+                    <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)} type="password"/>
+                    <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)} type="password"/>
                     <Agreement>By creating an account, I consert to the processing of my personal data in accordance with the <b>PRIVACY POLICY</b></Agreement>
-                    <Button onClick={handleClick}>CREATE</Button>
+                    <Button id="registerBtn" onClick={handleClick}>CREATE</Button>
                     <LINK >Already have an account ? <Link to="/login"> Login</Link> </LINK>
                     <Error id="err">Something went wrong..</Error>
                     <Loader id="loader">
