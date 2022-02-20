@@ -2,7 +2,7 @@
 
 Title of the project : Watch Party
 
-Team Members :    Ajinkya Shinde (2019IMT-008)
+Team Members :    Ajinkya Shinde (2019IMT-008), 
                   Sarthak Jain (2019IMT-087)
                   
 Description of the project : 
