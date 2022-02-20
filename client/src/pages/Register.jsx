@@ -27,7 +27,7 @@ width: 40%;
 background-color: white;
 border-radius: 10px;
 ${mobile({ width: "80%"})}
-${mobile({paddingBottom: "200px"})}
+${mobile({paddingBottom: "220px"})}
 `
 const Title = styled.h1`
 font-size: 24px;
