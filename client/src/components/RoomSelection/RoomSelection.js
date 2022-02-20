@@ -49,6 +49,7 @@ function RoomSelection({setroom_credentials}) {
           id="room_pass"
           error={room_pass_error}
           helperText={room_pass_error_text}
+          type="password"
         />
         <Button
           id="room_btn"

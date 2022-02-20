@@ -65,6 +65,7 @@ io.on("connection", (socket) => {
     console.log("recieved join request");
     const {error1, room_id} = findRoom({room_id : room_credentials.room_id, room_pass : room_credentials.room_pass})
     if(error1){
+      console.log("line no 68",error1);
       return callback(error1);
     }
   
@@ -114,6 +115,9 @@ io.on("connection", (socket) => {
    })
    socket.on('disconnect', ()=>{
        const user = removeUser(socket.id);
+       if(!user){
+        return;
+      } 
        count_decrement(user.room_id);
        console.log(`${socket.id} disconnected`);
  

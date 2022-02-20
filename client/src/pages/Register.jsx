@@ -26,7 +26,7 @@ padding-bottom: 50px;
 width: 40%;
 background-color: white;
 border-radius: 10px;
-${mobile({ width: "80%",})}
+${mobile({ width: "80%"})}
 `
 const Title = styled.h1`
 font-size: 24px;
@@ -149,9 +149,9 @@ const Register = ({currUser, setCurrUser}) => {
                 <Title>CREATE AN ACCOUNT</Title>
                 <Form className='form'>
                     <Input placeholder="username"onChange={(e)=> setusername(e.target.value)}/>
-                    <Input placeholder="email" onChange={(e)=> setemail(e.target.value)}/>
-                    <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)}/>
-                    <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)}/>
+                    <Input placeholder="email" onChange={(e)=> setemail(e.target.value)} type="email"/>
+                    <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)} type="password"/>
+                    <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)} type="password"/>
                     <Agreement>By creating an account, I consert to the processing of my personal data in accordance with the <b>PRIVACY POLICY</b></Agreement>
                     <Button id="registerBtn" onClick={handleClick}>CREATE</Button>
                     <LINK >Already have an account ? <Link to="/login"> Login</Link> </LINK>
