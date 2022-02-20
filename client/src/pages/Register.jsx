@@ -21,12 +21,14 @@ align-items: center;
 justify-content: center;
 `
 const Wrapper = styled.div`
-padding: 25px;
+border: 2px solid red;
+padding: 20px;
 padding-bottom: 50px;
 width: 40%;
 background-color: white;
 border-radius: 10px;
 ${mobile({ width: "80%"})}
+${mobile({paddingBottom: "200px"})}
 `
 const Title = styled.h1`
 font-size: 24px;
@@ -54,6 +56,7 @@ padding: 10px;
 const Agreement = styled.span`
 font-size: 12px;
 margin: 20px 0px;
+
 `
 
 const Button = styled.button`
@@ -148,7 +151,7 @@ const Register = ({currUser, setCurrUser}) => {
             <Wrapper>
                 <Title>CREATE AN ACCOUNT</Title>
                 <Form className='form'>
-                    <Input placeholder="username"onChange={(e)=> setusername(e.target.value)}/>
+                    <Input placeholder="username" onChange={(e)=> setusername(e.target.value)}/>
                     <Input placeholder="email" onChange={(e)=> setemail(e.target.value)} type="email"/>
                     <Input placeholder="password" onChange={(e)=> setpassword(e.target.value)} type="password"/>
                     <Input placeholder="Confirm password" onChange={(e)=> setpasswordagain(e.target.value)} type="password"/>
