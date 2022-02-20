@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:5000/api/auth";
+// const baseURL = "http://localhost:5000/api/auth";
 
-// const baseURL = "https://watch-party-sarthak.herokuapp.com/api/auth"
+const baseURL = "https://watch-party-sarthak.herokuapp.com/api/auth"
 
 export const LoginCall = async (data)=>{
   const res = await axios.post(`${baseURL}/login`, data, {withCredentials: true});
