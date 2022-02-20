@@ -21,7 +21,6 @@ align-items: center;
 justify-content: center;
 `
 const Wrapper = styled.div`
-border: 2px solid red;
 padding: 20px;
 padding-bottom: 50px;
 width: 40%;
