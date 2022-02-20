@@ -8,8 +8,8 @@ import io from 'socket.io-client'
 
 let socket = null;
 
-const ENDPOINT = "http://localhost:5000";
-// const ENDPOINT = "https://watch-party-sarthak.herokuapp.com/";
+// const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://watch-party-sarthak.herokuapp.com/";
 
 const Home = ({room_credentials, username}) => {
 
